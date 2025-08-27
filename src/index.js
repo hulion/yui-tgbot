@@ -116,40 +116,336 @@ async function handleTelegramUpdate(update) {
   }
 }
 
-// Admin panel for viewing logs
+// Admin panel for viewing logs with Magic UI components
 function generateLogPage() {
-  const logHtml = logs.map(log => `<p>${log}</p>`).join('');
+  const logHtml = logs.map((log, index) => `
+    <div class="log-item" style="animation: slideInLeft 0.3s ease-out ${index * 0.02}s both;">
+      <div class="log-content">
+        <span class="log-text">${log}</span>
+      </div>
+    </div>
+  `).join('');
   
   return `
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>Telegram Bot 日志</title>
+    <title>🤖 Telegram Bot Dashboard</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" content="30">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
-        .header { background-color: #0088cc; color: white; padding: 20px; border-radius: 5px; }
-        .logs { background-color: white; padding: 20px; border-radius: 5px; margin-top: 20px; }
-        p { margin: 5px 0; font-family: monospace; font-size: 12px; }
-        .footer { margin-top: 20px; color: #666; font-size: 12px; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * { font-family: 'Inter', sans-serif; }
+        
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: gradientShift 8s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+            50% { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-glow {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            background-size: 400% 400%;
+            animation: gradientRotate 3s ease-in-out infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        @keyframes gradientRotate {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .log-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            margin: 8px 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        
+        .log-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .log-content {
+            padding: 12px 16px;
+            position: relative;
+        }
+        
+        .log-text {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.4;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .stats-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+        }
+        
+        .floating-circles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .circle:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .circle:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .circle:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1); opacity: 0.5; }
+            50% { transform: translateY(-20px) scale(1.1); opacity: 0.8; }
+        }
+        
+        .refresh-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 10px 20px;
+            color: white;
+            font-size: 14px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: blink 1.5s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .scroll-indicator {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+        
+        .scroll-thumb {
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 2px;
+            animation: scrollThumb 8s linear infinite;
+        }
+        
+        @keyframes scrollThumb {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(150px); }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>📊 Telegram Bot 日志监控</h1>
-        <p>实时显示最近 100 条日志记录</p>
+    <div class="animated-bg"></div>
+    <div class="floating-circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
     </div>
     
-    <div class="logs">
-        <h2>📝 日志记录 (${logs.length} 条)</h2>
-        ${logHtml || '<p>暂无日志记录</p>'}
+    <div class="refresh-indicator">
+        <span class="status-dot"></span>
+        自动刷新 30s
     </div>
     
-    <div class="footer">
-        <p>⏰ 页面每 30 秒自动刷新 | 🤖 Bot Token: ***${BOT_TOKEN.slice(-10)}</p>
-        <p>💾 由于 CF Worker 免费版限制，日志仅保存在内存中</p>
+    <div class="scroll-indicator">
+        <div class="scroll-thumb"></div>
     </div>
+    
+    <div class="container mx-auto px-6 py-8">
+        <!-- Header Section -->
+        <div class="glass-card p-8 mb-8 text-center">
+            <h1 class="header-glow text-5xl font-bold mb-4">🤖 Telegram Bot Dashboard</h1>
+            <p class="text-white/80 text-lg">实时监控 · 智能分析 · 现代设计</p>
+        </div>
+        
+        <!-- Stats Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="stats-card text-center">
+                <div class="text-3xl font-bold text-white mb-2">${logs.length}</div>
+                <div class="text-white/70">日志条数</div>
+            </div>
+            <div class="stats-card text-center">
+                <div class="text-3xl font-bold text-white mb-2">${new Date().toLocaleTimeString('zh-CN')}</div>
+                <div class="text-white/70">当前时间</div>
+            </div>
+            <div class="stats-card text-center">
+                <div class="text-3xl font-bold text-white mb-2">在线</div>
+                <div class="text-white/70">运行状态</div>
+            </div>
+        </div>
+        
+        <!-- Logs Section -->
+        <div class="glass-card p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-semibold text-white">📝 实时日志</h2>
+                <div class="text-white/60 text-sm">最新 100 条记录</div>
+            </div>
+            
+            <div class="space-y-2 max-h-96 overflow-y-auto custom-scrollbar">
+                ${logHtml || `
+                    <div class="text-center py-12">
+                        <div class="text-6xl mb-4">🔍</div>
+                        <div class="text-white/60">暂无日志记录</div>
+                        <div class="text-white/40 text-sm mt-2">发送消息给 Bot 来生成日志</div>
+                    </div>
+                `}
+            </div>
+        </div>
+        
+        <!-- Footer Section -->
+        <div class="mt-8 glass-card p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-white/60">
+                <div>
+                    <div class="flex items-center mb-2">
+                        <span class="text-lg mr-2">⏰</span>
+                        页面每 30 秒自动刷新
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-lg mr-2">🤖</span>
+                        Bot Token: ***${BOT_TOKEN.slice(-10)}
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center mb-2">
+                        <span class="text-lg mr-2">💾</span>
+                        内存存储 (CF Worker 免费版)
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-lg mr-2">🚀</span>
+                        Powered by Magic UI
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #ff5252, #26a69a);
+        }
+    </style>
 </body>
 </html>`;
 }
@@ -195,15 +491,65 @@ async function handleRequest(request, env) {
     });
   }
   
-  // Default response
+  // Default response with modern UI
   return new Response(`
-    <h1>🤖 Telegram Bot Worker</h1>
-    <p>Bot 正在运行中...</p>
-    <ul>
-      <li><a href="/health">健康检查</a></li>
-      <li><a href="/logs">查看日志</a></li>
-    </ul>
-    <p><small>请配置 webhook 到 /webhook 端点</small></p>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>🤖 Telegram Bot</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+        }
+        .nav-link {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-6">
+    <div class="glass-card p-8 max-w-md w-full text-center">
+        <div class="text-6xl mb-4">🤖</div>
+        <h1 class="text-3xl font-bold text-white mb-4">Telegram Bot</h1>
+        <p class="text-white/80 mb-8">Worker 正在运行中...</p>
+        
+        <div class="space-y-4">
+            <a href="/logs" class="nav-link block px-6 py-3 rounded-lg text-white no-underline">
+                📝 查看日志
+            </a>
+            <a href="/health" class="nav-link block px-6 py-3 rounded-lg text-white no-underline">
+                ❤️ 健康检查
+            </a>
+        </div>
+        
+        <div class="mt-8 pt-6 border-t border-white/20">
+            <p class="text-white/60 text-sm">
+                Webhook 端点：<code class="text-white/80">/webhook</code>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
   `, {
     headers: { 'Content-Type': 'text/html; charset=utf-8' }
   });
