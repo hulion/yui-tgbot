@@ -141,65 +141,37 @@ function generateLogPage() {
         * { font-family: 'Inter', sans-serif; }
         
         body { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #000000;
             min-height: 100vh;
             margin: 0;
             overflow-x: hidden;
         }
         
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            animation: gradientShift 8s ease-in-out infinite;
-        }
-        
-        @keyframes gradientShift {
-            0%, 100% { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-            50% { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        }
-        
         .glass-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+            background: #1c1c1e;
+            border: 1px solid #2c2c2e;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
         
-        .header-glow {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-            background-size: 400% 400%;
-            animation: gradientRotate 3s ease-in-out infinite;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        @keyframes gradientRotate {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        .header-title {
+            color: #ffffff;
         }
         
         .log-item {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            margin: 8px 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #2c2c2e;
+            border: 1px solid #3a3a3c;
+            border-radius: 8px;
+            margin: 4px 0;
+            transition: all 0.2s ease;
             overflow: hidden;
         }
         
         .log-item:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateX(10px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            background: #3a3a3c;
+            border-color: #48484a;
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
         
         .log-content {
@@ -210,7 +182,7 @@ function generateLogPage() {
         .log-text {
             font-family: 'Monaco', 'Menlo', monospace;
             font-size: 13px;
-            color: rgba(255, 255, 255, 0.9);
+            color: #ffffff;
             line-height: 1.4;
         }
         
@@ -226,73 +198,28 @@ function generateLogPage() {
         }
         
         .stats-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
+            background: #2c2c2e;
+            border: 1px solid #3a3a3c;
+            border-radius: 12px;
             padding: 20px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         .stats-card:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-5px);
+            background: #3a3a3c;
+            transform: translateY(-2px);
         }
         
-        .floating-circles {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-        
-        .circle {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        .circle:nth-child(1) {
-            width: 200px;
-            height: 200px;
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-        
-        .circle:nth-child(2) {
-            width: 150px;
-            height: 150px;
-            top: 60%;
-            right: 10%;
-            animation-delay: 2s;
-        }
-        
-        .circle:nth-child(3) {
-            width: 100px;
-            height: 100px;
-            bottom: 20%;
-            left: 20%;
-            animation-delay: 4s;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) scale(1); opacity: 0.5; }
-            50% { transform: translateY(-20px) scale(1.1); opacity: 0.8; }
-        }
         
         .refresh-indicator {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50px;
-            padding: 10px 20px;
-            color: white;
+            background: #2c2c2e;
+            border: 1px solid #3a3a3c;
+            border-radius: 20px;
+            padding: 10px 16px;
+            color: #ffffff;
             font-size: 14px;
             animation: pulse 2s infinite;
         }
@@ -306,7 +233,7 @@ function generateLogPage() {
             display: inline-block;
             width: 8px;
             height: 8px;
-            background: #4ade80;
+            background: #34c759;
             border-radius: 50%;
             margin-right: 8px;
             animation: blink 1.5s infinite;
@@ -322,16 +249,16 @@ function generateLogPage() {
             right: 20px;
             top: 50%;
             transform: translateY(-50%);
-            width: 4px;
+            width: 3px;
             height: 200px;
-            background: rgba(255, 255, 255, 0.1);
+            background: #2c2c2e;
             border-radius: 2px;
         }
         
         .scroll-thumb {
             width: 100%;
             height: 50px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            background: #007AFF;
             border-radius: 2px;
             animation: scrollThumb 8s linear infinite;
         }
@@ -343,12 +270,6 @@ function generateLogPage() {
     </style>
 </head>
 <body>
-    <div class="animated-bg"></div>
-    <div class="floating-circles">
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-    </div>
     
     <div class="refresh-indicator">
         <span class="status-dot"></span>
@@ -362,23 +283,23 @@ function generateLogPage() {
     <div class="container mx-auto px-6 py-8">
         <!-- Header Section -->
         <div class="glass-card p-8 mb-8 text-center">
-            <h1 class="header-glow text-5xl font-bold mb-4">🤖 Telegram Bot Dashboard</h1>
-            <p class="text-white/80 text-lg">实时监控 · 智能分析 · 现代设计</p>
+            <h1 class="header-title text-4xl font-semibold mb-4">🤖 Telegram Bot Dashboard</h1>
+            <p class="text-white/60 text-lg">实时监控 · 智能分析</p>
         </div>
         
         <!-- Stats Section -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="stats-card text-center">
                 <div class="text-3xl font-bold text-white mb-2">${logs.length}</div>
-                <div class="text-white/70">日志条数</div>
+                <div class="text-white/60">日志条数</div>
             </div>
             <div class="stats-card text-center">
                 <div class="text-3xl font-bold text-white mb-2">${new Date().toLocaleTimeString('zh-CN')}</div>
-                <div class="text-white/70">当前时间</div>
+                <div class="text-white/60">当前时间</div>
             </div>
             <div class="stats-card text-center">
                 <div class="text-3xl font-bold text-white mb-2">在线</div>
-                <div class="text-white/70">运行状态</div>
+                <div class="text-white/60">运行状态</div>
             </div>
         </div>
         
@@ -433,17 +354,17 @@ function generateLogPage() {
         }
         
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
+            background: #1c1c1e;
             border-radius: 3px;
         }
         
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            background: #48484a;
             border-radius: 3px;
         }
         
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(45deg, #ff5252, #26a69a);
+            background: #636366;
         }
     </style>
 </body>
@@ -504,26 +425,24 @@ async function handleRequest(request, env) {
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         * { font-family: 'Inter', sans-serif; }
         body { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #000000;
             min-height: 100vh;
             margin: 0;
         }
         .glass-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+            background: #1c1c1e;
+            border: 1px solid #2c2c2e;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
         .nav-link {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
+            background: #2c2c2e;
+            border: 1px solid #3a3a3c;
+            transition: all 0.2s ease;
         }
         .nav-link:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
+            background: #3a3a3c;
+            transform: translateY(-1px);
         }
     </style>
 </head>
