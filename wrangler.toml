@@ -1,0 +1,9 @@
+name = "telegram-bot"
+main = "src/index.js"
+compatibility_date = "2023-12-01"
+
+[env.production]
+vars = { ENVIRONMENT = "production" }
+
+[env.development]
+vars = { ENVIRONMENT = "development" }
