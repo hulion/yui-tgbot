@@ -133,7 +133,6 @@ function generateLogPage() {
     <title>🤖 Telegram Bot Dashboard</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="30">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -211,17 +210,82 @@ function generateLogPage() {
         }
         
         
-        .refresh-indicator {
+        .refresh-controls {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #2c2c2e;
-            border: 1px solid #3a3a3c;
-            border-radius: 20px;
-            padding: 10px 16px;
+            background: #1c1c1e;
+            border: 1px solid #2c2c2e;
+            border-radius: 12px;
+            padding: 16px;
             color: #ffffff;
             font-size: 14px;
-            animation: pulse 2s infinite;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+        
+        .refresh-btn {
+            background: #007AFF;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 12px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .refresh-btn:hover {
+            background: #0051D0;
+            transform: scale(0.98);
+        }
+        
+        .refresh-icon {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        
+        .refresh-btn.loading .refresh-icon {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .refresh-settings {
+            margin-bottom: 12px;
+        }
+        
+        .refresh-settings label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 12px;
+            color: #ffffff60;
+        }
+        
+        .refresh-settings select {
+            width: 100%;
+            background: #2c2c2e;
+            border: 1px solid #3a3a3c;
+            border-radius: 6px;
+            padding: 6px 8px;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .refresh-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #ffffff60;
         }
         
         @keyframes pulse {
@@ -271,9 +335,24 @@ function generateLogPage() {
 </head>
 <body>
     
-    <div class="refresh-indicator">
-        <span class="status-dot"></span>
-        自动刷新 30s
+    <div class="refresh-controls">
+        <button id="refreshBtn" class="refresh-btn" onclick="manualRefresh()">
+            <span class="refresh-icon">🔄</span>
+            <span class="refresh-text">刷新</span>
+        </button>
+        <div class="refresh-settings">
+            <label for="autoRefresh">自动刷新:</label>
+            <select id="autoRefresh" onchange="updateRefreshInterval()">
+                <option value="0">关闭</option>
+                <option value="60">1分钟</option>
+                <option value="120">2分钟</option>
+                <option value="300">5分钟</option>
+            </select>
+        </div>
+        <div class="refresh-status">
+            <span class="status-dot" id="statusDot"></span>
+            <span id="statusText">手动刷新</span>
+        </div>
     </div>
     
     <div class="scroll-indicator">
@@ -367,6 +446,104 @@ function generateLogPage() {
             background: #636366;
         }
     </style>
+    
+    <script>
+        let autoRefreshTimer = null;
+        let countdown = 0;
+        let countdownTimer = null;
+        
+        function manualRefresh() {
+            const btn = document.getElementById('refreshBtn');
+            const icon = btn.querySelector('.refresh-icon');
+            const text = btn.querySelector('.refresh-text');
+            
+            btn.classList.add('loading');
+            text.textContent = '刷新中...';
+            btn.disabled = true;
+            
+            // 重新加载页面
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        }
+        
+        function updateRefreshInterval() {
+            const select = document.getElementById('autoRefresh');
+            const interval = parseInt(select.value);
+            const statusText = document.getElementById('statusText');
+            const statusDot = document.getElementById('statusDot');
+            
+            // 清除现有定时器
+            if (autoRefreshTimer) {
+                clearInterval(autoRefreshTimer);
+                autoRefreshTimer = null;
+            }
+            if (countdownTimer) {
+                clearInterval(countdownTimer);
+                countdownTimer = null;
+            }
+            
+            if (interval === 0) {
+                statusText.textContent = '手动刷新';
+                statusDot.style.background = '#8E8E93';
+                return;
+            }
+            
+            // 启动自动刷新
+            countdown = interval;
+            statusDot.style.background = '#34c759';
+            updateCountdown();
+            
+            countdownTimer = setInterval(updateCountdown, 1000);
+            autoRefreshTimer = setInterval(() => {
+                window.location.reload();
+            }, interval * 1000);
+            
+            // 保存用户偏好到 localStorage
+            localStorage.setItem('autoRefreshInterval', interval.toString());
+        }
+        
+        function updateCountdown() {
+            const statusText = document.getElementById('statusText');
+            if (countdown <= 0) {
+                countdown = parseInt(document.getElementById('autoRefresh').value);
+            }
+            
+            const minutes = Math.floor(countdown / 60);
+            const seconds = countdown % 60;
+            const timeStr = minutes > 0 ? 
+                \`\${minutes}:\${seconds.toString().padStart(2, '0')}\` : 
+                \`\${seconds}秒\`;
+                
+            statusText.textContent = \`自动刷新 \${timeStr}\`;
+            countdown--;
+        }
+        
+        // 页面加载时恢复用户设置
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedInterval = localStorage.getItem('autoRefreshInterval');
+            if (savedInterval) {
+                document.getElementById('autoRefresh').value = savedInterval;
+                updateRefreshInterval();
+            }
+        });
+        
+        // 页面可见性变化时暂停/恢复自动刷新
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                // 页面隐藏时暂停
+                if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+                if (countdownTimer) clearInterval(countdownTimer);
+                document.getElementById('statusText').textContent = '已暂停';
+            } else {
+                // 页面显示时恢复
+                const interval = parseInt(document.getElementById('autoRefresh').value);
+                if (interval > 0) {
+                    updateRefreshInterval();
+                }
+            }
+        });
+    </script>
 </body>
 </html>`;
 }
